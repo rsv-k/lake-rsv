@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const {token, prefix, roleToRule} = require('./config.json');
+const {prefix, roleToRule} = require('./config.json');
 const lake = new Discord.Client();
 
 const playlist = new Map();
@@ -25,4 +25,4 @@ lake.on('message', msg => {
     }
 });
 
-lake.login(process.env.token);
+lake.login(process.env.BOT_TOKEN);
