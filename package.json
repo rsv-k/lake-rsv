@@ -5,7 +5,7 @@
   "main": "lake.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node lake.js"
+    "start": "nodemon lake.js"
   },
   "keywords": [],
   "author": "",
