@@ -25,4 +25,4 @@ lake.on('message', msg => {
     } catch(e) { console.log(e) }
 });
 
-lake.login(process.env.BOT_TOKEN);
+lake.login(process.env.TOKEN);

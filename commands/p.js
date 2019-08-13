@@ -26,10 +26,10 @@ async function play(msg, link, queue, playlist) {
     stream(msg, link, queue, playlist);
 }
 
-function stream(msg, args, queue, playlist) {
+async function stream(msg, args, queue, playlist) {
     playlist.set(msg.guild.id, queue);
 
-    queue.connection.playStream( 
+    await queue.connection.playStream( 
         ytdl(queue.songs[0].url, {filter: 'audioonly', begin: 120000}), {volume : queue.volume / 100})
         .on('end', () => {
         queue.songs.shift();

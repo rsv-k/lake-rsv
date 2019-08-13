@@ -4,14 +4,16 @@
   "description": "",
   "main": "lake.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node lake.js"
+    "start": "node lake.js",
+    "go": "nodemon lake.js"
   },
+  "engines": { "node": "10.15.3" },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "discord.js": "^11.5.1",
+    "express": "^4.17.1",
     "ffmpeg-binaries": "^4.0.0",
     "nodemon": "^1.19.1",
     "opusscript": "0.0.6",
