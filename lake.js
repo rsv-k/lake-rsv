@@ -1,4 +1,3 @@
-const token = require('./token.json').token;
 const Discord = require('discord.js');
 
 const lake = new Discord.Client();
@@ -16,4 +15,4 @@ lake.on('message', msg => {
     }
 })
 
-lake.login(process.env.TOKEN || token);
+lake.login(process.env.TOKEN || require('./token.json').token);
