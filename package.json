@@ -5,10 +5,8 @@
   "main": "lake.js",
   "scripts": {
     "start": "node lake.js",
-    "worker": "node lake.js"
-  },
-  "engines": {
-    "node": "10.15.3"
+    "worker": "node lake.js",
+    "web": "node lake.js"
   },
   "keywords": [],
   "author": "",
