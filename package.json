@@ -4,21 +4,19 @@
   "description": "",
   "main": "lake.js",
   "scripts": {
-    "start": "node lake.js",
-    "go": "nodemon lake.js",
+    "go": "node lake.js",
+    "start": "nodemon lake.js",
     "web": "npm start"
   },
-  "engines": { "node": "10.15.3" },
+  "engines": {
+    "node": "10.15.3"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "discord.js": "^11.5.1",
     "express": "^4.17.1",
-    "ffmpeg-binaries": "^4.0.0",
-    "nodemon": "^1.19.1",
-    "opusscript": "0.0.6",
-    "ytdl-core": "^0.29.2",
-    "ytpl": "^0.1.14"
+    "nodemon": "^1.19.1"
   }
 }
