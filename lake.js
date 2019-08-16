@@ -5,7 +5,7 @@ const lake = new Discord.Client();
 
 lake.on('ready', () => { console.log(`Lake has been launched`) });
 lake.on('message', msg => {
-    if(!msg.guild || msg.author.bot) return;
+    if(!msg.guild || msg.author.bot || msg.author.id === '481189853241802792') return;
     const text = msg.content.toLowerCase();
 
     if (text.includes('lago') || text.includes('лаго')) {
