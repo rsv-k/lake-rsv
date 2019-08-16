@@ -4,7 +4,8 @@
   "description": "",
   "main": "lake.js",
   "scripts": {
-    "start": "node lake.js"
+    "start": "node lake.js",
+    "worker": "node lake.js"
   },
   "engines": {
     "node": "10.15.3"
