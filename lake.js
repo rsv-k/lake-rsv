@@ -15,4 +15,4 @@ lake.on('message', msg => {
     }
 })
 
-lake.login(process.env.TOKEN || require('./token.json').token);
+lake.login(process.env.TOKEN);
