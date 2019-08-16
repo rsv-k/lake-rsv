@@ -4,9 +4,7 @@
   "description": "",
   "main": "lake.js",
   "scripts": {
-    "start": "node lake.js",
-    "worker": "node lake.js",
-    "web": "node lake.js"
+    "start": "node lake.js"
   },
   "keywords": [],
   "author": "",
