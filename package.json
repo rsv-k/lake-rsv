@@ -5,8 +5,7 @@
   "main": "lake.js",
   "scripts": {
     "go": "node lake.js",
-    "start": "nodemon lake.js",
-    "web": "npm start"
+    "start": "nodemon lake.js"
   },
   "engines": {
     "node": "10.15.3"
