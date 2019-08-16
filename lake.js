@@ -12,6 +12,7 @@ lake.on('message', msg => {
         const lago = lake.emojis.find(emoji => emoji.name === 'lago');
         
         msg.react(lago.id);
+        console.log(msg.content);
     }
 })
 
