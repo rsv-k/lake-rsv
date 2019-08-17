@@ -7,7 +7,10 @@ lake.on('message', msg => {
     const text = msg.content.toLowerCase();
 
     if (text.includes('lago') || text.includes('лаго')) {
-        const lago = lake.emojis.find(emoji => emoji.name === 'lago');
+        let reaction = 'lago';
+        if (Math.floor(Math.random() * 100) === 7) reaction = 'lago-tired';
+
+        const lago = lake.emojis.find(emoji => emoji.name === reaction);
         msg.react(lago.id);
     }
 
