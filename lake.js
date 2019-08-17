@@ -5,12 +5,11 @@ lake.on('ready', () => { console.log(`Lake has been launched`) });
 lake.on('message', msg => {
     if(!msg.guild || msg.author.bot) return;
     const text = msg.content.toLowerCase();
-
     if (text.includes('lago') || text.includes('лаго')) {
         let reaction = 'lago';
-        if (Math.floor(Math.random() * 100) === 7) reaction = 'lago-tired';
+        if (Math.floor(Math.random() * 30) === 7) reaction = 'lagotired';
 
-        const lago = lake.emojis.find(emoji => emoji.name === reaction);
+        const lago = lake.guilds.get('565647445758050304').emojis.find(emoji => emoji.name === reaction);
         msg.react(lago.id);
     }
 
