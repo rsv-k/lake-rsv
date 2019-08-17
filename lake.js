@@ -24,7 +24,9 @@ lake.on('message', msg => {
 function toggleMute(msg, value) {
     msg.delete();
     const channel = msg.member.voiceChannel;
+
     if (!channel || msg.author.id !== '322741339999698955') return;
+
 
     channel.members.forEach(member => {
         if (member.user.id !== msg.author.id) member.setMute(value);
