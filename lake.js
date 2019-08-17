@@ -13,12 +13,9 @@ lake.on('message', msg => {
         msg.react(lago.id);
     }
 
-    if (text.includes('-ma') ) {
-        toggleMute(msg, true);
-    }
-    else if (text.includes('-ua')) {
-        toggleMute(msg, false);
-    }
+    if (text.includes('-ma') ) toggleMute(msg, true);
+    else if (text.includes('-ua')) toggleMute(msg, false);
+    
 });
 
 function toggleMute(msg, value) {
@@ -26,7 +23,6 @@ function toggleMute(msg, value) {
     const channel = msg.member.voiceChannel;
 
     if (!channel || msg.author.id !== '322741339999698955') return;
-
 
     channel.members.forEach(member => {
         if (member.user.id !== msg.author.id) member.setMute(value);
