@@ -8,7 +8,7 @@ lake.on('message', msg => {
     if (text.includes('lago') || text.includes('лаго')) {
         let reaction = 'lago';
         if (Math.floor(Math.random() * 30) === 7) reaction = 'lagotired';
-
+        if (Math.floor(Math.random() * 100) === 7) reaction = 'lagoscared';
         const lago = lake.guilds.get('565647445758050304').emojis.find(emoji => emoji.name === reaction);
         msg.react(lago.id);
     }
