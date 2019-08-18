@@ -1,7 +1,7 @@
+const snekfetch = require('snekfetch');
 const Discord = require('discord.js');
 const lake = new Discord.Client();
 
-lake.on('ready', () => { console.log(`Lake has been launched`) });
 lake.on('message', async (msg) => {
     if(!msg.guild || msg.author.bot) return;
     
@@ -15,10 +15,14 @@ lake.on('message', async (msg) => {
         return addReaction(msg, reaction);
     }
 
+    if (msg.content.toLowerCase() === 'пикчу') {
+        getPicture(msg);
+    }
     if (msg.channel.name.toLowerCase().includes('голосование')) {
         const text = msg.content;
         const numbers = text.match(/\d+./g);
         if (!numbers || !text.toLowerCase().includes('темы')) return;
+
         const title = text.split('\n')[0];
         let body = '';
         text.split('\n').forEach((item, i) => {
@@ -57,4 +61,33 @@ function addReaction(msg, reaction) {
     const lago = lake.guilds.get('565647445758050304').emojis.find(emoji => emoji.name === reaction);
     msg.react(lago.id);
 }
+
+async function getPicture(msg) {
+    const communities = ['funny', 'gifs', 'reactiongifs', 'pics', 'aww', 'PrettyGirls', 'interestingasfuck', 'AdviceAnimals', 'food', 'PeopleFuckingDying', 'rarepuppers', 'NatureIsFuckingLit', 'BeAmazed', 'Tinder', 'natureismetal', 'perfectlycutscreams', 'EarthPorn', 'Anime', 'oddlysatisfying', 'Wellthatsucks','popular', 'mildlyinteresting', 'original', 'meme', 'dank_meme'];
+    const randomCommunity = Math.floor(Math.random() * (communities.length - 1));
+    let posts = (await getDataFromReddit(communities[randomCommunity]));
+    
+    if (!posts.length) return;
+    posts = posts.filter(post => {
+        return !post.data.url.includes('v.redd.it') 
+        && !post.data.url.includes('reddit.com/r/')
+        && !post.data.url.includes('discord.gg')
+        && !post.data.url.includes('youtu.be');
+    });
+
+    const randomPost = Math.floor(Math.random() * (posts.length - 1));
+    const url = posts[randomPost].data.url;
+    let embed = new Discord.RichEmbed();
+    if (url.includes('i.redd.it') || url.includes('.jpg') || url.includes('.png')) {
+        embed.setImage(url);
+    }
+    else embed = url;
+    
+    msg.channel.send(embed);
+}
+async function getDataFromReddit(community) {
+    return (await snekfetch.get(`https://www.reddit.com/r/${community}.json?sort=top&t=week`).query(200)).body.data.children;
+}
+
 lake.login(process.env.TOKEN);
+lake.on('ready', () => console.log(`Lake has been launched`) );
