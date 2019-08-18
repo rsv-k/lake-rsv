@@ -4,8 +4,9 @@ const lake = new Discord.Client();
 lake.on('ready', () => { console.log(`Lake has been launched`) });
 lake.on('message', async (msg) => {
     if(!msg.guild || msg.author.bot) return;
+    
     const text = msg.content.toLowerCase();
-    if (Math.floor(Math.random() * 300) === 7) return addReaction(msg, 'lago');
+    if (Math.floor(Math.random() * 1000) === 7) return addReaction(msg, 'lago');
     
     if (text.includes('lago') || text.includes('лаго')) {
         let reaction = 'lago';
@@ -15,15 +16,28 @@ lake.on('message', async (msg) => {
     }
 
     if (msg.channel.name.toLowerCase().includes('голосование')) {
-        const numbers = msg.content.match(/\d+./g);
-        if (!numbers || !msg.content.toLowerCase().includes('темы')) return;
+        const text = msg.content;
+        const numbers = text.match(/\d+./g);
+        if (!numbers || !text.toLowerCase().includes('темы')) return;
+        const title = text.split('\n')[0];
+        let body = '';
+        text.split('\n').forEach((item, i) => {
+            body += i !== 0 ? item + '\n' : '';
+        })
         
-        const lastNumber = parseInt(numbers[numbers.length - 1]);
-        const emojiNumbers = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣'];
+        const embed = new Discord.RichEmbed()
+        .setTitle(title)
+        .setColor(0x00000)
+        .setDescription(body);
+        msg.reply({embed}).then(async (message) => {
+            const lastNumber = parseInt(numbers[numbers.length - 1]);
+            const emojiNumbers = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣'];
 
-        for(let i = 0; i < lastNumber; i++) {
-            await msg.react(`${emojiNumbers[i]}`);
-        }
+            for(let i = 0; i < lastNumber; i++) {
+                await message.react(`${emojiNumbers[i]}`);
+            }
+        })
+        msg.delete();
     }
 
     if (text.includes('-ma')) toggleMute(msg, true);
