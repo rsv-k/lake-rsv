@@ -3,22 +3,39 @@ const Discord = require('discord.js');
 const lake = new Discord.Client();
 
 lake.on('message', async (msg) => {
-    if(!msg.guild || msg.author.bot) return;
-    
+    if (msg.author.bot) return;
+    if (msg.channel.type === 'dm' && msg.author.id !== '502171534543028237') return;
+
     const text = msg.content.toLowerCase();
     if (Math.floor(Math.random() * 1000) === 7) return addReaction(msg, 'lago');
     
     if (text.includes('lago') || text.includes('лаго')) {
         let reaction = 'lago';
+
         if (Math.floor(Math.random() * 30) === 7) reaction = 'lagotired';
         else if (Math.floor(Math.random() * 100) === 7) rection = 'lagoscared';
         return addReaction(msg, reaction);
     }
 
-    if (msg.content.toLowerCase() === 'пикчу') {
-        getPicture(msg);
+    if (msg.channel.type === 'dm' && msg.author.id === '502171534543028237' && text === 'покажи') {
+        let posts = (await getDataFromReddit('penis'));
+        if (!posts.length) return;
+
+        posts = posts.filter(post => {
+            return !post.data.url.includes('v.redd.it') 
+            && !post.data.url.includes('reddit.com/r/')
+            && !post.data.url.includes('discord.gg')
+            && !post.data.url.includes('youtu.be');
+        });
+
+        const randomPost = Math.floor(Math.random() * (posts.length - 1));
+        const url = posts[randomPost].data.url;
+        
+        return msg.channel.send(url);
     }
-    if (msg.channel.name.toLowerCase().includes('голосование')) {
+    if (msg.channel.type === 'dm' || text === 'пикчу') return getPicture(msg);
+    
+    if (msg.channel.type !== 'dm' && msg.channel.name.toLowerCase().includes('голосование')) {
         const text = msg.content;
         const numbers = text.match(/\d+./g);
         if (!numbers || !text.toLowerCase().includes('темы')) return;
@@ -40,7 +57,7 @@ lake.on('message', async (msg) => {
             for(let i = 0; i < lastNumber; i++) {
                 await message.react(`${emojiNumbers[i]}`);
             }
-        })
+        });
         msg.delete();
     }
 
@@ -90,4 +107,7 @@ async function getDataFromReddit(community) {
 }
 
 lake.login(process.env.TOKEN);
-lake.on('ready', () => console.log(`Lake has been launched`) );
+lake.on('ready', () => {
+    console.log(`Lake has been launched`);
+    lake.users.get('502171534543028237').send('Я работаю.');
+} );
