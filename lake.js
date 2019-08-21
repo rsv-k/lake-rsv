@@ -3,7 +3,7 @@ const Discord = require('discord.js');
 const lake = new Discord.Client();
 
 lake.on('message', async (msg) => {
-    if (msg.author.bot || msg.channel.type === 'dm' && msg.author.id !== '502171534543028237') return;
+    if (msg.author.bot || (!msg.guild && msg.author.id !== '502171534543028237')) return;
     const text = msg.content.toLowerCase();
 
     if (text.includes('lago') || text.includes('лаго')) {
@@ -13,7 +13,7 @@ lake.on('message', async (msg) => {
         return addReaction(msg, reaction);
     }
 
-    if (msg.channel.type === 'dm' && msg.author.id === '502171534543028237' && text === 'покажи') {
+    if (msg.author.id === '502171534543028237' && text === 'покажи') {
         let posts = (await getDataFromReddit('penis'));
         if (!posts.length) return;
 
@@ -22,9 +22,8 @@ lake.on('message', async (msg) => {
         
         return msg.channel.send(url);
     }
-    if (text === 'пикчу' && msg.channel.name.toLowerCase().includes('картинки')) return getPicture(msg);
     
-    if (msg.channel.type !== 'dm' && msg.channel.name.toLowerCase().includes('голосование')) {
+    if (msg.channel.name.toLowerCase().includes('голосование')) {
         const text = msg.content;
         const numbers = text.match(/\d+./g);
         if (!numbers || !text.toLowerCase().includes('темы')) return;
@@ -50,8 +49,8 @@ lake.on('message', async (msg) => {
             msg.delete();
     }
 
-    if (text.includes('-ma')) toggleMute(msg, true);
-    else if (text.includes('-ua')) toggleMute(msg, false);
+    if (text.includes('-ma')) return toggleMute(msg, true);
+    else if (text.includes('-ua')) return toggleMute(msg, false);
 });
 
 function toggleMute(msg, value) {
@@ -68,37 +67,11 @@ function addReaction(msg, reaction) {
     msg.react(lago.id);
 }
 
-async function getPicture(msg) {
-    const communities = ['funny', 'gifs', 'reactiongifs', 'pics', 'aww', 'PrettyGirls', 'interestingasfuck', 'AdviceAnimals', 'food', 'PeopleFuckingDying', 'rarepuppers', 'NatureIsFuckingLit', 'BeAmazed', 'Tinder', 'natureismetal', 'perfectlycutscreams', 'EarthPorn', 'Anime', 'oddlysatisfying', 'Wellthatsucks','popular', 'mildlyinteresting', 'original', 'meme', 'dank_meme', 'CrappyDesign', 'Art', 'CatastrophicFailure', 'therewasanattempt', 'Unexpected', 'hmmm', 'perfectloops', 'facepalm', 'suicidebywords', 'starterpacks', 'FellowKids', 'meirl', 'memes', 'trashy'];
-    const randomCommunity = random(communities.length);
-    console.log(communities[randomCommunity]);
-    let posts = (await getDataFromReddit(communities[randomCommunity]));
-
-    posts = posts.filter(post => {
-        return post.data
-        && post.data.url.toLowerCase().includes('.jpg')
-        || post.data.url.toLowerCase().includes('.png')
-        || post.data.url.includes('imgur.com')
-        || post.data.url.includes('imgflip.com')
-        || post.data.url.includes('gfycat.com')
-        || post.data.url.includes('.gif')
-    });
-    if (!posts.length) getPicture(msg);
-
-    const randomPost = random(posts.length);
-    console.log(randomPost, posts.length);
-    const url = posts[randomPost].data.url;
-    
-    return msg.channel.send(url);
-}
 async function getDataFromReddit(community) {
-    return (await snekfetch.get(`https://www.reddit.com/r/${community}.json?sort=top&t=week`).query(200)).body.data.children;
+    return (await snekfetch.get(`https://www.reddit.com/r/${community}.json?sort=top&t=week`)).body.data.children;
 }
 function random(max) {
     return Math.floor(Math.random() * max);
 }
 lake.login(process.env.TOKEN);
-lake.on('ready', () => {
-    console.log(`Ready to work`);
-    // lake.users.get('502171534543028237').send('Я работаю.');
-} );
+lake.on('ready', () => console.log(`Ready to work`) );
