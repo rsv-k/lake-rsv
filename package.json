@@ -4,7 +4,10 @@
   "description": "",
   "main": "lake.js",
   "scripts": {
-    "start": "nodemon lake.js"
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": "8.4.0"
   },
   "keywords": [],
   "author": "",
