@@ -1,29 +1,47 @@
-const snekfetch = require('snekfetch');
+const http = require('http');
+const express = require('express');
+const app = express();
+app.get('/', (req, res) => {
+    console.log(Date.now() + ' Ping Recieved');
+    res.sendStatus(200);
+});
+
+app.listen(process.env.PORT);
+setInterval(() => {
+    http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`)
+}, 280000);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const Discord = require('discord.js');
 const lake = new Discord.Client();
+const { prefix } = require('./config.json');
+
+
 
 lake.on('message', async (msg) => {
-    if (msg.author.bot || (!msg.guild && msg.author.id !== '502171534543028237')) return;
+    if (msg.author.bot || !msg.guild) return;
+
     const text = msg.content.toLowerCase();
 
-    if (text.includes('lago') || text.includes('лаго')) {
-        let reaction = random(30) === 7 ? 'lagotired' : 'lago';
-        if (random(100) === 7) reaction = 'lagoscared';
-
-        return addReaction(msg, reaction);
-    }
-
-    if (msg.author.id === '502171534543028237' && text === 'покажи') {
-        let posts = (await getDataFromReddit('penis'));
-        if (!posts.length) return;
-
-        const post = random(posts.length);
-        const url = posts[post].data.url;
-        
-        return msg.channel.send(url);
-    }
+    if (text.includes('lago') || text.includes('лаго')) return putLagoReactions(msg);
     
-    if (msg.channel.name.toLowerCase().includes('голосование')) {
+    if (msg.channel.type === 'text' && msg.channel.name.toLowerCase().includes('голосование')) {
         const text = msg.content;
         const numbers = text.match(/\d+./g);
         if (!numbers || !text.toLowerCase().includes('темы')) return;
@@ -49,29 +67,124 @@ lake.on('message', async (msg) => {
             msg.delete();
     }
 
-    if (text.includes('-ma')) return toggleMute(msg, true);
-    else if (text.includes('-ua')) return toggleMute(msg, false);
+    if (msg.content === '1' && msg.author.id === '481189853241802792') msg.delete();
+
+    const [command, ...args] = msg.content.split(' ');
+    
+    if (!command.startsWith(prefix) || command.indexOf(prefix) !== command.lastIndexOf(prefix)) return;
+    
+    try {
+        const commandFile = require(`./commands/${command.toLowerCase().substring(2)}.js`);
+
+        commandFile.run(msg, args);
+    }
+    catch (err) { console.log(command) }
 });
 
-function toggleMute(msg, value) {
-    const channel = msg.member.voiceChannel;
-    if (!channel || msg.author.id !== '322741339999698955') return;
-    msg.delete();
 
-    channel.members.forEach(member => {
-        if (member.user.id !== msg.author.id) member.setMute(value);
-    })
+
+
+const events = {
+	MESSAGE_REACTION_ADD: 'messageReactionAdd',
+	MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
+};
+
+lake.on('messageReactionAdd', (reaction, user) => {
+    let counter = reaction.count;
+    console.log('added: ' + counter);
+    const msg = reaction.message;
+    
+    if (counter === 3) {
+        const chosen = lake.channels.get('613727337627779083');
+        
+        chosen.send({
+            embed: {
+                color: 3447003,
+                author: {
+                    name: msg.author.username,
+                    icon_url: msg.author.avatarURL
+                },
+                description: msg.content,
+                fields: [{
+                    name: 'Source',
+                    value: `[link](${msg.url})`
+                }],
+                timestamp: msg.createdAt,
+                footer: {
+                    text: msg.id
+                }
+            }
+        });
+    }
+});
+
+
+lake.on('messageReactionRemove', async (reaction, user) => {
+    let counter = reaction.count;
+    console.log('deleted: ' + counter);
+    const msg = reaction.message;
+
+    if (counter < 3) {
+        const chosen = lake.channels.get('613727337627779083');
+
+        const messages = await chosen.fetchMessages();
+
+        messages.forEach(message => {
+            if (message.author.username === 'Lake' && message.embeds.find(embed => embed.footer.text === msg.id )) {
+                message.delete();
+            }
+        });
+    }
+
+});
+
+lake.on('raw', async e => {
+    if (!events.hasOwnProperty(e.t)) return;
+
+    const { d: data } = e;
+    const channel = lake.channels.get(data.channel_id);
+    
+    if (channel.messages.has(data.message_id)) {
+        console.log('I am cached');
+        return;
+    }
+    console.log('I am not cached');
+
+    channel.fetchMessage(data.message_id).then(msg => {
+        const emoji = data.emoji.id ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
+        const reaction = msg.reactions.get(emoji);
+        
+        if (reaction) reaction.users.set(data.user_id, lake.users.get(data.user_id));
+
+        if (e.t === 'MESSAGE_REACTION_ADD') {
+            console.log('emoji added');
+            lake.emit('messageReactionAdd', reaction, lake.users.get(data.user_id));
+        }
+        else if (e.t === 'MESSAGE_REACTION_ADD') {
+            console.log('emoji deleted');
+            return lake.emit('messageReactionRemove', reaction, lake.users.get(data.user_id));
+        }
+    });
+})
+
+
+
+
+
+function putLagoReactions(msg) {
+    let reaction = random(30) === 7 ? 'lagotired' : 'lago';
+    if (random(100) === 7) reaction = 'lagoscared';
+
+    return addReaction(msg, reaction);
 }
 function addReaction(msg, reaction) {
-    const lago = lake.guilds.get('565647445758050304').emojis.find(emoji => emoji.name === reaction);
-    msg.react(lago.id);
+    const emoji = lake.guilds.get('565647445758050304').emojis.find(emoji => emoji.name === reaction);
+    msg.react(emoji.id);
 }
 
-async function getDataFromReddit(community) {
-    return (await snekfetch.get(`https://www.reddit.com/r/${community}.json?sort=top&t=week`)).body.data.children;
-}
 function random(max) {
     return Math.floor(Math.random() * max);
 }
+
 lake.login(process.env.TOKEN);
 lake.on('ready', () => console.log(`Ready to work`) );

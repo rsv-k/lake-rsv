@@ -4,7 +4,8 @@
   "description": "",
   "main": "lake.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node lake.js",
+    "go": "nodemon lake.js"
   },
   "engines": {
     "node": "8.4.0"
@@ -15,7 +16,6 @@
   "dependencies": {
     "discord.js": "^11.5.1",
     "express": "^4.17.1",
-    "nodemon": "^1.19.1",
-    "snekfetch": "^4.0.4"
+    "nodemon": "^1.19.1"
   }
 }
