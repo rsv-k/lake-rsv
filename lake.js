@@ -38,7 +38,7 @@ lake.on('message', async (msg) => {
     if (msg.author.bot || !msg.guild) return;
 
     const text = msg.content.toLowerCase();
-
+    
     if (text.includes('lago') || text.includes('лаго')) return putLagoReactions(msg);
     
     if (msg.channel.type === 'text' && msg.channel.name.toLowerCase().includes('голосование')) {
@@ -168,7 +168,17 @@ lake.on('raw', async e => {
 })
 
 
+lake.on('voiceStateUpdate', (oldMember, newMember) => {
+    let newUserChannel = newMember.voiceChannel;
+    let oldUserChannel = oldMember.voiceChannel;
 
+    if (oldUserChannel === undefined && newUserChannel !== undefined && newMember.guild.id === '611111608219074570') {
+       newMember.addRole('614970662020317339');
+    }
+    else if (newUserChannel === undefined && newMember.guild.id === '611111608219074570') {
+        newMember.removeRole('614970662020317339');
+    }
+});
 
 
 function putLagoReactions(msg) {
