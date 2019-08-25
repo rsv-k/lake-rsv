@@ -201,12 +201,15 @@ lake.on('raw', async e => {
 lake.on('voiceStateUpdate', (oldMember, newMember) => {
     let newUserChannel = newMember.voiceChannel;
     let oldUserChannel = oldMember.voiceChannel;
-
+    
     if (oldUserChannel === undefined && newUserChannel !== undefined && newMember.guild.id === '611111608219074570') {
-        !newMember.user.bot && newUserChannel.parentID !== '615290496918749187' && newMember.addRole('614970662020317339');
+        console.log(newUserChannel.parentID, '615290496918749187');
+        if (!newMember.user.bot && newUserChannel.parentID !== '615290496918749187') {
+            newMember.addRole('614970662020317339');
+        }
     }
     else if (newUserChannel === undefined && newMember.guild.id === '611111608219074570') {
-        !newMember.user.bot && newUserChannel.parentID !== '615290496918749187' && newMember.removeRole('614970662020317339');
+        newMember.removeRole('614970662020317339');
     }
 });
 
