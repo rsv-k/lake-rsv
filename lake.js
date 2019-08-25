@@ -106,7 +106,7 @@ lake.on('messageReactionAdd', (reaction, user) => {
     
     const msg = reaction.message;
     
-    if (counter => 1) {
+    if (counter === 3) {
         const chosen = lake.channels.get('613727337627779083');
         const embed = {
                 color: 3447003,
