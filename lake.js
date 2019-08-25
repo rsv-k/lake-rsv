@@ -128,7 +128,7 @@ lake.on('messageReactionAdd', (reaction, user) => {
                 }
         }
 
-        if (msg.attachments.size > ) {
+        if (msg.attachments.size > 1) {
             const images = [];
             msg.attachments.every(attach => images.push(attach.url));
             for (let i = 0; i < images.length; i++) {
