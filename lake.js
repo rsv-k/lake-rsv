@@ -36,7 +36,7 @@ const { prefix } = require('./config.json');
 
 lake.on('message', async (msg) => {
     if (msg.author.bot || !msg.guild) return;
-
+    
     const text = msg.content.toLowerCase();
     
     if (text.includes('lago') || text.includes('лаго')) return putLagoReactions(msg);
@@ -90,21 +90,23 @@ const events = {
 };
 
 lake.on('messageReactionAdd', (reaction, user) => {
+    if (reaction.emoji.id !== '614764513001996288') return;
     let counter = reaction.count;
-    console.log('added: ' + counter);
+    
     const msg = reaction.message;
     
-    if (counter === 3) {
+    if (counter === 1) {
         const chosen = lake.channels.get('613727337627779083');
-        
-        chosen.send({
-            embed: {
+        const embed = {
                 color: 3447003,
                 author: {
                     name: msg.author.username,
                     icon_url: msg.author.avatarURL
                 },
                 description: msg.content,
+                image: {
+                    url: ''
+                },
                 fields: [{
                     name: 'Source',
                     value: `[link](${msg.url})`
@@ -113,15 +115,25 @@ lake.on('messageReactionAdd', (reaction, user) => {
                 footer: {
                     text: msg.id
                 }
-            }
-        });
+        }
+        if (msg.attachments.size > 0) {
+            msg.attachments.every(attach => embed.image.url += attach.url);
+        }
+
+        if (msg.content.includes('png') || msg.content.includes('img')) {
+            embed.image.url = msg.content;
+            embed.description = '';
+        }
+        
+        chosen.send({ embed });
     }
 });
 
 
 lake.on('messageReactionRemove', async (reaction, user) => {
+    if (reaction.emoji.id !== '614764513001996288') return;
     let counter = reaction.count;
-    console.log('deleted: ' + counter);
+    
     const msg = reaction.message;
 
     if (counter < 3) {
@@ -152,6 +164,7 @@ lake.on('raw', async e => {
 
     channel.fetchMessage(data.message_id).then(msg => {
         const emoji = data.emoji.id ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
+        
         const reaction = msg.reactions.get(emoji);
         
         if (reaction) reaction.users.set(data.user_id, lake.users.get(data.user_id));
