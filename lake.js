@@ -31,7 +31,7 @@ setInterval(() => {
 const Discord = require('discord.js');
 const lake = new Discord.Client();
 const { prefix } = require('./config.json');
-
+const guildMusic = new Map();
 
 
 lake.on('message', async (msg) => {
@@ -67,16 +67,27 @@ lake.on('message', async (msg) => {
             msg.delete();
     }
 
-    if (msg.content === '1' && msg.author.id === '481189853241802792') msg.delete();
+
+
+
+
+
+
+
+
+
+
+
+    const playlist = guildMusic.get(msg.guild.id) || { songs: [], dispatcher: null }
+
 
     const [command, ...args] = msg.content.split(' ');
-    
     if (!command.startsWith(prefix) || command.indexOf(prefix) !== command.lastIndexOf(prefix)) return;
     
     try {
         const commandFile = require(`./commands/${command.toLowerCase().substring(2)}.js`);
 
-        commandFile.run(msg, args);
+        commandFile.run(msg, args, playlist, guildMusic);
     }
     catch (err) { console.log(command) }
 });
@@ -95,7 +106,7 @@ lake.on('messageReactionAdd', (reaction, user) => {
     
     const msg = reaction.message;
     
-    if (counter === 3) {
+    if (counter => 1) {
         const chosen = lake.channels.get('613727337627779083');
         const embed = {
                 color: 3447003,
@@ -116,8 +127,16 @@ lake.on('messageReactionAdd', (reaction, user) => {
                     text: msg.id
                 }
         }
+
         if (msg.attachments.size > 0) {
-            msg.attachments.every(attach => embed.image.url += attach.url);
+            const images = [];
+            msg.attachments.every(attach => images.push(attach.url));
+            for (let i = 0; i < images.length; i++) {
+                embed.image.url = images[i];
+                chosen.send({ embed });
+            }
+
+            return;
         }
 
         if (msg.content.includes('png') || msg.content.includes('img')) {
@@ -136,13 +155,13 @@ lake.on('messageReactionRemove', async (reaction, user) => {
     
     const msg = reaction.message;
 
-    if (counter < 3) {
+    if (counter === 3) {
         const chosen = lake.channels.get('613727337627779083');
 
         const messages = await chosen.fetchMessages();
 
         messages.forEach(message => {
-            if (message.author.username === 'Lake' && message.embeds.find(embed => embed.footer.text === msg.id )) {
+            if (message.embeds.find(embed => embed.footer.text === msg.id )) {
                 message.delete();
             }
         });
