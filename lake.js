@@ -128,7 +128,7 @@ lake.on('messageReactionAdd', (reaction, user) => {
                 }
         }
 
-        if (msg.attachments.size > 0) {
+        if (msg.attachments.size > ) {
             const images = [];
             msg.attachments.every(attach => images.push(attach.url));
             for (let i = 0; i < images.length; i++) {
@@ -147,7 +147,6 @@ lake.on('messageReactionAdd', (reaction, user) => {
         chosen.send({ embed });
     }
 });
-
 
 lake.on('messageReactionRemove', async (reaction, user) => {
     if (reaction.emoji.id !== '614764513001996288') return;
@@ -205,10 +204,10 @@ lake.on('voiceStateUpdate', (oldMember, newMember) => {
     let oldUserChannel = oldMember.voiceChannel;
 
     if (oldUserChannel === undefined && newUserChannel !== undefined && newMember.guild.id === '611111608219074570') {
-       newMember.addRole('614970662020317339');
+        !newMember.user.bot && newMember.addRole('614970662020317339');
     }
     else if (newUserChannel === undefined && newMember.guild.id === '611111608219074570') {
-        newMember.removeRole('614970662020317339');
+        !newMember.user.bot && newMember.removeRole('614970662020317339');
     }
 });
 
