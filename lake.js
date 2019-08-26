@@ -132,6 +132,8 @@ lake.on('messageReactionAdd', (reaction, user) => {
             const images = [];
             msg.attachments.every(attach => images.push(attach.url));
             for (let i = 0; i < images.length; i++) {
+                if (i === 1) embed.description = '';
+                
                 embed.image.url = images[i];
                 chosen.send({ embed });
             }

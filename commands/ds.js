@@ -1,13 +1,19 @@
 exports.run = (msg, args) => {
-    if (!args[0] || !msg.member.roles.find(role => role.name === 'Цензор' || role.name === 'Редактор')) return;
-    const id = args[0].match(/\d+/)[0];
+    const members = [...args].filter(Boolean);
+    if (!members[0] || !msg.member.roles.find(role => role.name === 'Цензор' || role.name === 'Редактор')) return;
     
-    const member = msg.guild.members.get(id);
-    if (!member.voiceChannel) return;
+    
 
     msg.guild.createChannel('disconnect', {type: 'voice'})
     .then (async (channel) => {
-        await member.setVoiceChannel(channel.id);
+
+        for (let i = 0; i < members.length; i++) {
+            const id = members[i].match(/\d+/)[0];
+            const member = msg.guild.members.get(id);
+
+            if (!member.voiceChannel) continue;
+            await member.setVoiceChannel(channel.id);
+        }
 
         await channel.delete();
     });
