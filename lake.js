@@ -128,7 +128,7 @@ lake.on('messageReactionAdd', (reaction, user) => {
                 }
         }
 
-        if (msg.attachments.size > 1) {
+        if (msg.attachments.size > 0) {
             const images = [];
             msg.attachments.every(attach => images.push(attach.url));
             for (let i = 0; i < images.length; i++) {
@@ -139,7 +139,7 @@ lake.on('messageReactionAdd', (reaction, user) => {
             return;
         }
 
-        if (msg.content.includes('png') || msg.content.includes('img')) {
+        if (msg.content.toLowerCase().includes('png') || msg.content.toLowerCase().includes('img')) {
             embed.image.url = msg.content;
             embed.description = '';
         }
@@ -154,7 +154,7 @@ lake.on('messageReactionRemove', async (reaction, user) => {
     
     const msg = reaction.message;
 
-    if (counter === 3) {
+    if (counter < 3) {
         const chosen = lake.channels.get('613727337627779083');
 
         const messages = await chosen.fetchMessages();
