@@ -3,7 +3,8 @@ exports.run = (msg, args) => {
     const id = args[0].match(/\d+/)[0];
     
     const member = msg.guild.members.get(id);
-    
+    if (!member.voiceChannel) return;
+
     msg.guild.createChannel('disconnect', {type: 'voice'})
     .then (async (channel) => {
         await member.setVoiceChannel(channel.id);
