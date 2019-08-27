@@ -2,8 +2,6 @@ exports.run = (msg, args) => {
     const members = [...args].filter(Boolean);
     if (!members[0] || !msg.member.roles.find(role => role.name === 'Цензор' || role.name === 'Редактор')) return;
     
-    
-
     msg.guild.createChannel('disconnect', {type: 'voice'})
     .then (async (channel) => {
 

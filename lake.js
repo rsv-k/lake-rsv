@@ -66,8 +66,9 @@ lake.on('message', async (msg) => {
             });
             msg.delete();
     }
-
-
+    if (msg.guild.id === '611111608219074570' && text.includes('Reminder') && text.includes('Пора бампать!')) {
+        msg.channel.send('<@565856907299127308> бампаем')
+    }
 
 
 
@@ -228,6 +229,12 @@ function addReaction(msg, reaction) {
 
 function random(max) {
     return Math.floor(Math.random() * max);
+}
+
+function reminder(msg) {
+    setInterval(() => {
+        msg.channel.send('test');
+    }, 15000)
 }
 
 lake.login(process.env.TOKEN);
