@@ -66,11 +66,11 @@ lake.on('message', async (msg) => {
             });
             msg.delete();
     }
-    if (msg.guild.id === '611111608219074570' && text.includes('Reminder') && text.includes('Пора бампать!')) {
-        msg.channel.send('<@565856907299127308> бампаем')
+    if (msg.content.includes('Please Enter Security Bump Code') && msg.guild.id === '611111608219074570') {
+        setTimeout(() => {
+            msg.channel.send('<@&613799917718077450> бампаем');
+        }, 14400000);
     }
-
-
 
 
 
