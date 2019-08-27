@@ -66,6 +66,9 @@ lake.on('message', async (msg) => {
             });
             msg.delete();
     }
+    if (msg.content === 'напиши' && msg.guild.id === '611111608219074570') {
+        msg.channel.send('!bump');
+    }
     if (msg.content.includes('Please Enter Security Bump Code') && msg.guild.id === '611111608219074570') {
         setTimeout(() => {
             msg.channel.send('<@&613799917718077450> бампаем');
