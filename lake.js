@@ -32,11 +32,12 @@ const Discord = require('discord.js');
 const lake = new Discord.Client();
 const { prefix } = require('./config.json');
 const guildMusic = new Map();
-
+const flag = {
+    reminder: null
+}
 
 lake.on('message', async (msg) => {
     if (!msg.guild) return;
-    
     const text = msg.content.toLowerCase();
     
     if (text.includes('lago') || text.includes('лаго')) return putLagoReactions(msg);
@@ -67,10 +68,16 @@ lake.on('message', async (msg) => {
             msg.delete();
     }
     if (msg.content.includes('Please Enter Security Bump Code') && msg.guild.id === '611111608219074570') {
-        console.log('here');
-        setTimeout(() => {
-            msg.channel.send('<@&613799917718077450> бампаем');
-        }, 14400000);
+        clearInterval(flag.reminder);
+
+        flag.reminder = setTimeout(bump, 14400000);
+    }
+    if (msg.guild.id === '611111608219074570' && msg.author.id === '315926021457051650' && msg.embeds[0].description.includes('Next bump point will be available')) {
+        clearInterval(flag.reminder);
+        time = msg.embeds[0].description.match(/\d\d:\d\d:\d\d/g)[0];
+        time = time.split(':').reduce((acc,time) => (60 * acc) + +time) * 1000;
+
+        flag.reminder = setTimeout(bump, time);
     }
 
 
@@ -232,11 +239,14 @@ function random(max) {
     return Math.floor(Math.random() * max);
 }
 
-function reminder(msg) {
-    setInterval(() => {
-        msg.channel.send('test');
-    }, 15000)
+function bump() {
+    // <@&613799917718077450> бампаем
+    msg.channel.send('<@481189853241802792>');
 }
+
+function convertTime(time) {
+
+};
 
 lake.login(process.env.TOKEN);
 lake.on('ready', () => console.log(`Ready to work`) );
