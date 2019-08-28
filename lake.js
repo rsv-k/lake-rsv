@@ -240,8 +240,7 @@ function random(max) {
 }
 
 function bump() {
-    // <@&613799917718077450> бампаем
-    msg.channel.send('<@481189853241802792>');
+    msg.channel.send('<@&613799917718077450> бампаем');
 }
 
 function convertTime(time) {
