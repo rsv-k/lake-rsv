@@ -35,7 +35,7 @@ const guildMusic = new Map();
 
 
 lake.on('message', async (msg) => {
-    if (msg.author.bot || !msg.guild) return;
+    if (!msg.guild) return;
     
     const text = msg.content.toLowerCase();
     
@@ -66,10 +66,8 @@ lake.on('message', async (msg) => {
             });
             msg.delete();
     }
-    if (msg.content === 'напиши' && msg.guild.id === '611111608219074570') {
-        msg.channel.send('!bump');
-    }
     if (msg.content.includes('Please Enter Security Bump Code') && msg.guild.id === '611111608219074570') {
+        console.log('here');
         setTimeout(() => {
             msg.channel.send('<@&613799917718077450> бампаем');
         }, 14400000);
@@ -86,7 +84,7 @@ lake.on('message', async (msg) => {
 
 
     const [command, ...args] = msg.content.split(' ');
-    if (!command.startsWith(prefix) || command.indexOf(prefix) !== command.lastIndexOf(prefix)) return;
+    if (msg.author.bot || !command.startsWith(prefix) || command.indexOf(prefix) !== command.lastIndexOf(prefix)) return;
     
     try {
         const commandFile = require(`./commands/${command.toLowerCase().substring(2)}.js`);
