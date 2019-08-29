@@ -69,7 +69,7 @@ lake.on('message', async (msg) => {
     }
     if (msg.content.includes('Please Enter Security Bump Code') && msg.guild.id === '611111608219074570') {
         clearInterval(flag.reminder);
-
+        console.log('timer set on 4 hours');
         flag.reminder = setTimeout(bump, 14400000);
     }
     if (msg.guild.id === '611111608219074570' && msg.author.id === '315926021457051650' && msg.embeds[0].description.includes('Next bump point will be available')) {
@@ -78,7 +78,7 @@ lake.on('message', async (msg) => {
         time = time.split(':').reduce((acc,time) => (60 * acc) + +time) * 1000;
         console.log(`timer set ${time}`);
 
-        flag.reminder = setTimeout(bump, 2000);
+        flag.reminder = setTimeout(bump, time);
     }
 
 
@@ -243,8 +243,8 @@ function random(max) {
 function bump() {
     const guild = lake.guilds.get('611111608219074570');
     const channel = guild.channels.get('611302025279438888');
-    // channel.send('<@&613799917718077450> бампаем');
-    channel.send('<@481189853241802792>');
+    
+    channel.send('<@&613799917718077450> бампаем');
 }
 
 lake.login(process.env.TOKEN);
