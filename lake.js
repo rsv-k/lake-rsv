@@ -76,8 +76,9 @@ lake.on('message', async (msg) => {
         clearInterval(flag.reminder);
         time = msg.embeds[0].description.match(/\d\d:\d\d:\d\d/g)[0];
         time = time.split(':').reduce((acc,time) => (60 * acc) + +time) * 1000;
+        console.log(`timer set ${time}`);
 
-        flag.reminder = setTimeout(bump, time);
+        flag.reminder = setTimeout(bump, 2000);
     }
 
 
@@ -240,12 +241,11 @@ function random(max) {
 }
 
 function bump() {
-    msg.channel.send('<@&613799917718077450> бампаем');
+    const guild = lake.guilds.get('611111608219074570');
+    const channel = guild.channels.get('611302025279438888');
+    // channel.send('<@&613799917718077450> бампаем');
+    channel.send('<@481189853241802792>');
 }
-
-function convertTime(time) {
-
-};
 
 lake.login(process.env.TOKEN);
 lake.on('ready', () => console.log(`Ready to work`) );
