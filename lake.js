@@ -72,7 +72,7 @@ lake.on('message', async (msg) => {
         console.log('timer set on 4 hours');
         flag.reminder = setTimeout(bump, 14400000);
     }
-    if (msg.guild.id === '611111608219074570' && msg.author.id === '315926021457051650' && msg.embeds[0].description.includes('Next bump point will be available')) {
+    else if (msg.guild.id === '611111608219074570' && msg.author.id === '315926021457051650' && msg.embeds[0].description.includes('Next bump point will be available')) {
         clearInterval(flag.reminder);
         time = msg.embeds[0].description.match(/\d\d:\d\d:\d\d/g)[0];
         time = time.split(':').reduce((acc,time) => (60 * acc) + +time) * 1000;
