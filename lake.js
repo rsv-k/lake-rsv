@@ -27,7 +27,7 @@ setInterval(() => {
 
 
 
-
+require('dotenv').config()
 const Discord = require('discord.js');
 const lake = new Discord.Client();
 const { prefix } = require('./config.json');
@@ -70,7 +70,12 @@ lake.on('message', async (msg) => {
     if (msg.content.includes('Please Enter Security Bump Code') && msg.guild.id === '611111608219074570') {
         clearInterval(flag.reminder);
         console.log('timer set on 4 hours');
-        flag.reminder = setTimeout(bump, 14400000);
+        
+        flag.reminder = setTimeout(() => {
+            bump();
+            console.log('bumping after 4 hours');
+        }, 14340000);
+        return;
     }
     else if (msg.guild.id === '611111608219074570' && msg.author.id === '315926021457051650' && msg.embeds[0].description.includes('Next bump point will be available')) {
         clearInterval(flag.reminder);
@@ -79,6 +84,7 @@ lake.on('message', async (msg) => {
         console.log(`timer set ${time}`);
 
         flag.reminder = setTimeout(bump, time);
+        return;
     }
 
 
