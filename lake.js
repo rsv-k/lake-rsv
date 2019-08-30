@@ -41,8 +41,7 @@ lake.on('message', async (msg) => {
     const text = msg.content.toLowerCase();
     
     if (text.includes('lago') || text.includes('лаго')) return putLagoReactions(msg);
-    
-    if (msg.channel.type === 'text' && msg.channel.name.toLowerCase().includes('голосование')) {
+    else if (msg.channel.type === 'text' && msg.channel.name.toLowerCase().includes('голосование')) {
         const text = msg.content;
         const numbers = text.match(/\d+./g);
         if (!numbers || !text.toLowerCase().includes('темы')) return;
@@ -67,25 +66,18 @@ lake.on('message', async (msg) => {
             });
             msg.delete();
     }
-    if (msg.content.includes('Please Enter Security Bump Code') && msg.guild.id === '611111608219074570') {
-        clearInterval(flag.reminder);
+    else if (msg.channel.id === '611302025279438888' && msg.author.id === '315926021457051650' &&
+    msg.embeds[0].description.includes('Server bumped by')) {
+        clearTimeout(flag.reminder);
         console.log('timer set on 4 hours');
         
-        flag.reminder = setTimeout(() => {
-            bump();
-            console.log('bumping after 4 hours');
-        }, 14340000);
-        return;
+        flag.reminder = setTimeout(bump, 4 * 60 * 60 * 1000);
     }
-    else if (msg.guild.id === '611111608219074570' && msg.author.id === '315926021457051650' && msg.embeds[0].description.includes('Next bump point will be available')) {
-        clearInterval(flag.reminder);
-        time = msg.embeds[0].description.match(/\d\d:\d\d:\d\d/g)[0];
-        time = time.split(':').reduce((acc,time) => (60 * acc) + +time) * 1000;
-        console.log(`timer set ${time}`);
 
-        flag.reminder = setTimeout(bump, time);
-        return;
-    }
+
+
+
+
 
 
 
@@ -254,4 +246,21 @@ function bump() {
 }
 
 lake.login(process.env.TOKEN);
-lake.on('ready', () => console.log(`Ready to work`) );
+lake.on('ready', async () => {
+    console.log(`Ready to work`);
+
+    const guild = lake.guilds.get('611111608219074570');
+    const channel = guild.channels.get('611302025279438888');
+    const messages = await channel.fetchMessages();
+
+    messages.find(m => {
+        if (m.author.id === '315926021457051650' && m.embeds[0] && m.embeds[0].description.includes('Server bumped by')) {
+            const time = 4 *  60 * 60 * 1000 - (new Date() - m.createdAt);
+            clearTimeout(flag.reminder);
+
+            console.log(`bump set in ${time}`);
+            flag.reminder = setTimeout(bump, time);
+            return m;
+        }
+    });
+} );
