@@ -40,7 +40,7 @@ lake.on('message', async (msg) => {
     if (!msg.guild) return;
     const text = msg.content.toLowerCase();
     
-    if (text.includes('lago') || text.includes('лаго')) return putLagoReactions(msg);
+    if (text.includes('lago') || text.includes('лаго')) putLagoReactions(msg);
     else if (msg.channel.type === 'text' && msg.channel.name.toLowerCase().includes('голосование')) {
         const text = msg.content;
         const numbers = text.match(/\d+./g);
@@ -67,7 +67,7 @@ lake.on('message', async (msg) => {
             msg.delete();
     }
     else if (msg.channel.id === '611302025279438888' && msg.author.id === '315926021457051650' &&
-    msg.embeds[0].description.includes('Server bumped by')) {
+    msg.embeds[0] && msg.embeds[0].description.includes('Server bumped by')) {
         clearTimeout(flag.reminder);
         console.log('timer set on 4 hours');
         
@@ -88,16 +88,14 @@ lake.on('message', async (msg) => {
 
     const playlist = guildMusic.get(msg.guild.id) || { songs: [], dispatcher: null }
 
-
     const [command, ...args] = msg.content.split(' ');
-    if (msg.author.bot || !command.startsWith(prefix) || command.indexOf(prefix) !== command.lastIndexOf(prefix)) return;
     
+    if (msg.author.bot || !command.startsWith(prefix) || command.indexOf(prefix) !== command.lastIndexOf(prefix)) return;
     try {
         const commandFile = require(`./commands/${command.toLowerCase().substring(2)}.js`);
-
         commandFile.run(msg, args, playlist, guildMusic);
     }
-    catch (err) { console.log(command) }
+    catch (err) { console.log('Error with command: ' + command) }
 });
 
 
@@ -242,7 +240,7 @@ function bump() {
     const guild = lake.guilds.get('611111608219074570');
     const channel = guild.channels.get('611302025279438888');
     
-    channel.send('<@&613799917718077450> бампаем');
+    channel.send('<@&613799917718077450> бампаем (!bump и s.up)');
 }
 
 lake.login(process.env.TOKEN);
