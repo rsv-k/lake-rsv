@@ -182,10 +182,8 @@ lake.on('raw', async e => {
     const channel = lake.channels.get(data.channel_id);
     
     if (channel.messages.has(data.message_id)) {
-        console.log('I am cached');
         return;
     }
-    console.log('I am not cached');
 
     channel.fetchMessage(data.message_id).then(msg => {
         const emoji = data.emoji.id ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
@@ -195,11 +193,9 @@ lake.on('raw', async e => {
         if (reaction) reaction.users.set(data.user_id, lake.users.get(data.user_id));
 
         if (e.t === 'MESSAGE_REACTION_ADD') {
-            console.log('emoji added');
             lake.emit('messageReactionAdd', reaction, lake.users.get(data.user_id));
         }
         else if (e.t === 'MESSAGE_REACTION_ADD') {
-            console.log('emoji deleted');
             return lake.emit('messageReactionRemove', reaction, lake.users.get(data.user_id));
         }
     });
@@ -244,7 +240,6 @@ function bump() {
 
 lake.login(process.env.TOKEN);
 lake.on('ready', async () => {
-    console.log(`Ready to work`);
 
     const guild = lake.guilds.get('611111608219074570');
     const channel = guild.channels.get('611302025279438888');
@@ -257,7 +252,6 @@ lake.on('ready', async () => {
             const time = 4 *  60 * 60 * 1000 - (new Date() - m.createdAt);
             clearTimeout(flag.reminder);
 
-            console.log(`bump set in ${time}`);
             flag.reminder = setTimeout(bump, time);
             return m;
         }
