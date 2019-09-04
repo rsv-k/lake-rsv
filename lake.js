@@ -93,6 +93,7 @@ lake.on('message', async (msg) => {
     try {
         const commandFile = require(`./commands/${command.toLowerCase().substring(2)}.js`);
         commandFile.run(msg, args, playlist, guildMusic);
+        msg.delete();
     }
     catch (err) { console.error(err) }
 });
@@ -244,11 +245,11 @@ lake.on('ready', async () => {
     const guild = lake.guilds.get('611111608219074570');
     const channel = guild.channels.get('611302025279438888');
     const messages = await channel.fetchMessages();
-
     
 
     messages.find(m => {
         if (m.author.id === '315926021457051650' && m.embeds[0] && m.embeds[0].description.includes('Server bumped by')) {
+            
             const time = 4 *  60 * 60 * 1000 - (new Date() - m.createdAt);
             clearTimeout(flag.reminder);
             console.log('bump set in ' + time);
