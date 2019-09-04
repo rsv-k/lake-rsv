@@ -19,7 +19,7 @@ function playSong(msg, args, playlist, guildMusic) {
     const song = playlist.songs.shift();
     guildMusic.set(msg.guild.id, playlist);
     
-    playlist.dispatcher.playStream( ytdl(song) )
+    playlist.dispatcher.playStream( ytdl(song, {filer: 'audioonly'}), {volume: playlist.volume / 100} )
     .on('end', () => {
         if (!playlist.songs.length) return leave.run(msg, args, playlist, guildMusic);
         playSong(msg, args, playlist, guildMusic);

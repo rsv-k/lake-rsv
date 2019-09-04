@@ -85,7 +85,7 @@ lake.on('message', async (msg) => {
 
 
 
-    const playlist = guildMusic.get(msg.guild.id) || { songs: [], dispatcher: null }
+    const playlist = guildMusic.get(msg.guild.id) || { songs: [], dispatcher: null, volume: 30 }
 
     const [command, ...args] = msg.content.split(' ');
     
@@ -94,7 +94,7 @@ lake.on('message', async (msg) => {
         const commandFile = require(`./commands/${command.toLowerCase().substring(2)}.js`);
         commandFile.run(msg, args, playlist, guildMusic);
     }
-    catch (err) { console.log('Error with command: ' + command) }
+    catch (err) { console.error(err) }
 });
 
 
@@ -240,7 +240,7 @@ function bump() {
 
 lake.login(process.env.TOKEN);
 lake.on('ready', async () => {
-
+    console.log('Ready');
     const guild = lake.guilds.get('611111608219074570');
     const channel = guild.channels.get('611302025279438888');
     const messages = await channel.fetchMessages();
@@ -251,7 +251,7 @@ lake.on('ready', async () => {
         if (m.author.id === '315926021457051650' && m.embeds[0] && m.embeds[0].description.includes('Server bumped by')) {
             const time = 4 *  60 * 60 * 1000 - (new Date() - m.createdAt);
             clearTimeout(flag.reminder);
-
+            console.log('bump set in ' + time);
             flag.reminder = setTimeout(bump, time);
             return m;
         }
