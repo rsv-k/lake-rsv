@@ -1,6 +1,6 @@
 exports.run = (msg, args, playlist, guildMusic) => {
-    if (!playlist.dispatcher) return;
+    const voice = msg.guild.voiceConnection;
+    if (!voice) return;
 
-    guildMusic.delete(msg.guild.id);
-    return playlist.disconnect();
+    voice.disconnect();
 }
