@@ -85,7 +85,7 @@ lake.on('message', async (msg) => {
 
 
 
-    const playlist = guildMusic.get(msg.guild.id) || { songs: [], dispatcher: null }
+    const playlist = guildMusic.get(msg.guild.id) || { songs: [], dispatcher: null, volume: 5 }
 
     const [command, ...args] = msg.content.split(' ');
     
@@ -93,6 +93,7 @@ lake.on('message', async (msg) => {
     try {
         const commandFile = require(`./commands/${command.toLowerCase().substring(2)}.js`);
         commandFile.run(msg, args, playlist, guildMusic);
+        msg.delete();
     }
     catch (err) { console.log('Error with command: ' + command) }
 });
