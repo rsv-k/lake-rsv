@@ -244,11 +244,11 @@ lake.on('ready', async () => {
     const guild = lake.guilds.get('611111608219074570');
     const channel = guild.channels.get('611302025279438888');
     const messages = await channel.fetchMessages();
-
     
 
     messages.find(m => {
         if (m.author.id === '315926021457051650' && m.embeds[0] && m.embeds[0].description.includes('Server bumped by')) {
+            
             const time = 4 *  60 * 60 * 1000 - (new Date() - m.createdAt);
             clearTimeout(flag.reminder);
 
