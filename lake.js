@@ -93,7 +93,6 @@ lake.on('message', async (msg) => {
     try {
         const commandFile = require(`./commands/${command.toLowerCase().substring(2)}.js`);
         commandFile.run(msg, args, playlist, guildMusic);
-        msg.delete();
     }
     catch (err) { console.error(err) }
 });
