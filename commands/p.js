@@ -8,7 +8,6 @@ exports.run = async (msg, args, playlist, guildMusic) => {
     if (!link || (!ytdl.validateURL(link) && !ytpl.validateURL(link))) return;
 
     playlist.songs = [...playlist.songs, ...(await fillSongs(link))];
-    
     if (playlist.dispatcher) return msg.channel.send('added to queue');
 
     playlist.dispatcher = await msg.member.voiceChannel.join();
@@ -16,16 +15,16 @@ exports.run = async (msg, args, playlist, guildMusic) => {
 }
 
 function playSong(msg, args, playlist, guildMusic) {
+    guildMusic.set(msg.guild.id, playlist);
+
     if (playlist.leave || !playlist.songs.length) {
         playlist.dispatcher.disconnect();
         return guildMusic.delete(msg.guild.id);
     }
-    
-    const song = playlist.songs.shift();
-    guildMusic.set(msg.guild.id, playlist);
-    
-    playlist.dispatcher.playStream( ytdl(song.url, {filer: 'audioonly'}), {volume: playlist.volume / 100} )
+
+    playlist.dispatcher.playStream( ytdl(playlist.songs[0].url, {filer: 'audioonly'}), {volume: playlist.volume / 100} )
     .on('end', () => {
+        playlist.songs.shift();
         playSong(msg, args, playlist, guildMusic);
     });
 }
@@ -36,19 +35,19 @@ async function fillSongs(link) {
         info = (await ytpl(link)).items.map(song => {
             return {
                 title: song.title,
-                length: song.duration,
+                length: convertToMilliseconds(song.duration),
                 url: song.url_simple
             }
         });
     }
     else if (ytdl.validateURL(link)) {
-        const song = await ytdl.getBasicInfo(link);
-        info.push({
-            title: song.title,
-            length: song.length_seconds,
-            url: song.video_url
-        });
+        const {title, length_seconds: length, video_url: url} = await ytdl.getBasicInfo(link);
+        info.push({ title, length, url });
     }
-
     return info;
+}
+
+function convertToMilliseconds(time) {
+    const timeToConvert = time.split(':');
+    return timeToConvert.map((t, i) => t * Math.pow(60, timeToConvert.length - 1 - i)).reduce((a, b) => a + b);
 }
