@@ -86,7 +86,7 @@ lake.on('message', async (msg) => {
 
 
     const playlist = guildMusic.get(msg.guild.id) || { songs: [], dispatcher: null, volume: 30 }
-
+    
     const [command, ...args] = msg.content.split(' ');
     
     if (msg.author.bot || !command.startsWith(prefix) || command.indexOf(prefix) !== command.lastIndexOf(prefix)) return;
@@ -98,7 +98,9 @@ lake.on('message', async (msg) => {
 });
 
 
-
+lake.on('disconnect', () => {
+    console.log('disconnecting');
+})
 
 const events = {
 	MESSAGE_REACTION_ADD: 'messageReactionAdd',
