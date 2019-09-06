@@ -7,6 +7,7 @@ exports.run = async (msg, args, playlist, guildMusic) => {
     const link = args[0];
     if (!link || (!ytdl.validateURL(link) && !ytpl.validateURL(link))) return;
 
+    console.log(ytdl.validateURL(link), ytpl.validateURL(link));
     playlist.songs = [...playlist.songs, ...(await fillSongs(link))];
     if (playlist.dispatcher) return msg.channel.send('added to queue');
 
