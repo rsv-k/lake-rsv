@@ -6,8 +6,8 @@ exports.run = async (msg, args, playlist, guildMusic) => {
 
     const link = args[0];
     if (!link || (!ytdl.validateURL(link) && !ytpl.validateURL(link))) return;
-
     console.log(ytdl.validateURL(link), ytpl.validateURL(link));
+    clearInterval(playlist.timerOnLeave);
     playlist.songs = [...playlist.songs, ...(await fillSongs(link))];
     if (playlist.dispatcher) return msg.channel.send('added to queue');
 
@@ -17,12 +17,17 @@ exports.run = async (msg, args, playlist, guildMusic) => {
 
 function playSong(msg, args, playlist, guildMusic) {
     guildMusic.set(msg.guild.id, playlist);
+    if (playlist.leave) return guildMusic.delete(msg.guild.id);
+    
+    if (!playlist.songs.length) {
+        playlist.timerOnLeave = setTimeout(() => {
+            guildMusic.delete(msg.guild.id);
+            msg.guild.voiceConnection.disconnect();
+        }, 5 * 60 * 1000);
 
-    if (playlist.leave || !playlist.songs.length) {
-        playlist.dispatcher.disconnect();
-        return guildMusic.delete(msg.guild.id);
+        return;
     }
-
+    
     playlist.dispatcher.playStream( ytdl(playlist.songs[0].url, {filer: 'audioonly'}), {volume: playlist.volume / 100} )
     .on('end', () => {
         playlist.songs.shift();
@@ -33,10 +38,12 @@ function playSong(msg, args, playlist, guildMusic) {
 async function fillSongs(link) {
     let info = [];
     if (ytpl.validateURL(link)) {
-        info = (await ytpl(link)).items.map(song => {
+        info = (await ytpl(link)).items
+        .filter(song => !song.title.includes('[Deleted video]') && !song.title.includes('[Private video]'))
+        .map(song => {
             return {
                 title: song.title,
-                length: convertToMilliseconds(song.duration),
+                length: convertToSeconds(song.duration),
                 url: song.url_simple
             }
         });
@@ -48,7 +55,7 @@ async function fillSongs(link) {
     return info;
 }
 
-function convertToMilliseconds(time) {
+function convertToSeconds(time) {
     const timeToConvert = time.split(':');
     return timeToConvert.map((t, i) => t * Math.pow(60, timeToConvert.length - 1 - i)).reduce((a, b) => a + b);
 }
