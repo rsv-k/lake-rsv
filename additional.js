@@ -21,3 +21,10 @@ module.exports.embedInfo = (msg, title, color, body) => {
     // Send the embed to the same channel as the message
     msg.channel.send(embed);
 }
+
+module.exports.convertToSeconds = (time) => {
+    const timeToConvert = time.split(':');
+    if (timeToConvert.length < 2) return undefined;
+
+    return timeToConvert.map((t, i) => t * Math.pow(60, timeToConvert.length - 1 - i)).reduce((a, b) => a + b);
+}

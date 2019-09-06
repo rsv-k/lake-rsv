@@ -2,8 +2,8 @@ exports.run = (msg, args, playlist, guildMusic) => {
     if(!msg.guild.voiceConnection || !playlist.songs.length) return msg.channel.send('Nothing is being played.');
     if(playlist.songs.length <= 2) return msg.channel.send('The queue is to small to be shuffled');
 
-    playlist.songs = shuffle(queue.songs);
-    guildMusic.set(msg.guild.id, queue);
+    playlist.songs = shuffle(playlist.songs);
+    guildMusic.set(msg.guild.id, playlist);
     msg.channel.send('The queue has been shuffled');
 }
 

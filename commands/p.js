@@ -1,5 +1,6 @@
 const ytdl = require('ytdl-core');
 const ytpl = require('ytpl');
+const additional = require('../additional');
 
 exports.run = async (msg, args, playlist, guildMusic) => {
     if (!msg.member.voiceChannel || (!msg.member.roles.find(role => role.name === 'Цензор' || role.name === 'Редактор'))) return;
@@ -28,7 +29,9 @@ function playSong(msg, args, playlist, guildMusic) {
         return;
     }
     
-    playlist.dispatcher.playStream( ytdl(playlist.songs[0].url, {filer: 'audioonly'}), {volume: playlist.volume / 100} )
+    const streamOptions = {volume: playlist.volume / 100, seek: playlist.songs[0].seek}
+    const stream = ytdl(playlist.songs[0].url, {filer: 'audioonly'});
+    playlist.dispatcher.playStream( stream, streamOptions )
     .on('end', () => {
         playlist.songs.shift();
         playSong(msg, args, playlist, guildMusic);
@@ -43,19 +46,15 @@ async function fillSongs(link) {
         .map(song => {
             return {
                 title: song.title,
-                length: convertToSeconds(song.duration),
-                url: song.url_simple
+                length: additional.convertToSeconds(song.duration),
+                url: song.url_simple,
+                seek: 0
             }
         });
     }
     else if (ytdl.validateURL(link)) {
         const {title, length_seconds: length, video_url: url} = await ytdl.getBasicInfo(link);
-        info.push({ title, length, url });
+        info.push({ title, length, url, seek: 0 });
     }
     return info;
-}
-
-function convertToSeconds(time) {
-    const timeToConvert = time.split(':');
-    return timeToConvert.map((t, i) => t * Math.pow(60, timeToConvert.length - 1 - i)).reduce((a, b) => a + b);
 }
