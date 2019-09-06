@@ -1,3 +1,6 @@
+const ytdl = require('ytdl-core');
+const ytpl = require('ytpl');
+
 module.exports.getTime = (time) => {
     let seconds = time % 60;
     let minutes = ((time - seconds) / 60) % 60;
@@ -27,4 +30,25 @@ module.exports.convertToSeconds = (time) => {
     if (timeToConvert.length < 2) return undefined;
 
     return timeToConvert.map((t, i) => t * Math.pow(60, timeToConvert.length - 1 - i)).reduce((a, b) => a + b);
+}
+
+module.exports.fillSongs = async (link) => {
+    let info = [];
+    if (ytpl.validateURL(link)) {
+        info = (await ytpl(link)).items
+        .filter(song => !song.title.includes('[Deleted video]') && !song.title.includes('[Private video]'))
+        .map(song => {
+            return {
+                title: song.title,
+                length: this.convertToSeconds(song.duration),
+                url: song.url_simple,
+                seek: 0
+            }
+        });
+    }
+    else if (ytdl.validateURL(link)) {
+        const {title, length_seconds: length, video_url: url} = await ytdl.getBasicInfo(link);
+        info.push({ title, length, url, seek: 0 });
+    }
+    return info;
 }

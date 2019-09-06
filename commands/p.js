@@ -9,7 +9,7 @@ exports.run = async (msg, args, playlist, guildMusic) => {
     if (!link || (!ytdl.validateURL(link) && !ytpl.validateURL(link))) return;
     console.log(ytdl.validateURL(link), ytpl.validateURL(link));
     clearInterval(playlist.timerOnLeave);
-    playlist.songs = [...playlist.songs, ...(await fillSongs(link))];
+    playlist.songs = [...playlist.songs, ...(await additional.fillSongs(link))];
     if (playlist.dispatcher) return msg.channel.send('added to queue');
 
     playlist.dispatcher = await msg.member.voiceChannel.join();
@@ -36,25 +36,4 @@ function playSong(msg, args, playlist, guildMusic) {
         playlist.songs.shift();
         playSong(msg, args, playlist, guildMusic);
     });
-}
-
-async function fillSongs(link) {
-    let info = [];
-    if (ytpl.validateURL(link)) {
-        info = (await ytpl(link)).items
-        .filter(song => !song.title.includes('[Deleted video]') && !song.title.includes('[Private video]'))
-        .map(song => {
-            return {
-                title: song.title,
-                length: additional.convertToSeconds(song.duration),
-                url: song.url_simple,
-                seek: 0
-            }
-        });
-    }
-    else if (ytdl.validateURL(link)) {
-        const {title, length_seconds: length, video_url: url} = await ytdl.getBasicInfo(link);
-        info.push({ title, length, url, seek: 0 });
-    }
-    return info;
 }
