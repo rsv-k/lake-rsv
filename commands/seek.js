@@ -7,6 +7,4 @@ exports.run = (msg, args, playlist, guildMusic) => {
     playlist.songs = [playlist.songs[0], ...playlist.songs];
 
     playlist.dispatcher.dispatcher.end();
-
-    // msg.channel.send('rewind to ' + args[0]);
 }

@@ -9,7 +9,7 @@ exports.run = (msg, args, playlist, guildMusic) => {
     const length = Math.min(10, songs.length - 1);
 
     for(let i = 1; i <= length; i++) {
-        body += `\`${i}.\` [${songs[i].title}](${songs[i].url}) | ${additional.getTime(songs[i].length)}\n\n`;
+        body += `\`${i}.\` [${songs[i].title}](${songs[i].url}) | \`${additional.getTime(songs[i].length)} requested by: ${songs[i].requested}\`\n\n`;
     }
 
     additional.embedInfo(msg, 'THE QUEUE', 0xE9A4AF, body + footer);

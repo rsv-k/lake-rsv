@@ -3,13 +3,13 @@ const ytpl = require('ytpl');
 const additional = require('../additional');
 
 exports.run = async (msg, args, playlist, guildMusic) => {
-    if (!msg.member.voiceChannel || (!msg.member.roles.find(role => role.name === 'Цензор' || role.name === 'Редактор'))) return;
+    if (!msg.member.voiceChannel) return;
 
     const link = args[0];
     if (!link || (!ytdl.validateURL(link) && !ytpl.validateURL(link))) return;
     console.log(ytdl.validateURL(link), ytpl.validateURL(link));
     clearInterval(playlist.timerOnLeave);
-    playlist.songs = [...playlist.songs, ...(await additional.fillSongs(link))];
+    playlist.songs = [...playlist.songs, ...(await additional.fillSongs(msg, link))];
     if (playlist.dispatcher) return msg.channel.send('added to queue');
 
     playlist.dispatcher = await msg.member.voiceChannel.join();

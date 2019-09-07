@@ -32,7 +32,7 @@ module.exports.convertToSeconds = (time) => {
     return timeToConvert.map((t, i) => t * Math.pow(60, timeToConvert.length - 1 - i)).reduce((a, b) => a + b);
 }
 
-module.exports.fillSongs = async (link) => {
+module.exports.fillSongs = async (msg, link) => {
     let info = [];
     if (ytpl.validateURL(link)) {
         info = (await ytpl(link)).items
@@ -42,13 +42,14 @@ module.exports.fillSongs = async (link) => {
                 title: song.title,
                 length: this.convertToSeconds(song.duration),
                 url: song.url_simple,
-                seek: 0
+                seek: 0,
+                requested: msg.author.username
             }
         });
     }
     else if (ytdl.validateURL(link)) {
         const {title, length_seconds: length, video_url: url} = await ytdl.getBasicInfo(link);
-        info.push({ title, length, url, seek: 0 });
+        info.push({ title, length, url, seek: 0, requested: msg.author.username });
     }
     return info;
 }
