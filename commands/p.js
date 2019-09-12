@@ -6,7 +6,9 @@ exports.run = async (msg, args, playlist, guildMusic) => {
     if (!msg.member.voiceChannel) msg.reply("You are not in any  channel");
 
     const link = args[0];
-    if (!link || (!ytdl.validateURL(link) && !ytpl.validateURL(link))) return;
+    if (!link || (!ytdl.validateURL(link) && !ytpl.validateURL(link))) {
+        return msg.reply('invalid url');
+    }
     
     clearInterval(playlist.timerOnLeave);
     playlist.songs = [...playlist.songs, ...(await additional.fillSongs(msg, link))];

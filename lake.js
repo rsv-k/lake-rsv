@@ -210,6 +210,7 @@ lake.on('voiceStateUpdate', (oldMember, newMember) => {
     if (oldUserChannel === undefined && newUserChannel !== undefined && newMember.guild.id === '611111608219074570') {
         if (!newMember.user.bot && newUserChannel.parentID !== '615290496918749187') {
             newMember.addRole('614970662020317339');
+            
         }
     }
     else if (newUserChannel === undefined && newMember.guild.id === '611111608219074570') {

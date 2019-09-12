@@ -5,4 +5,5 @@ exports.run = (msg, args, playlist, guildMusic) => {
 
     playlist.clear = true;
     voice.disconnect();
+    msg.channel.send(`leaving...`)
 }

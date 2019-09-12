@@ -13,5 +13,5 @@ exports.run = (msg, args, playlist, guildMusic) => {
         playlist.dispatcher.dispatcher.end();
     }
 
-    msg.reply(`${amount} ${ amount > 1 ? 'songs have' : 'song has'} been skipped`);
+    msg.channel.send(`${amount} ${ amount > 1 ? 'songs have' : 'song has'} been skipped`);
 }
