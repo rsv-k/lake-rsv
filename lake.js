@@ -262,7 +262,7 @@ lake.on('ready', async () => {
 
     const guild = lake.guilds.get('611111608219074570');
     const channel = guild.channels.get('611302025279438888');
-    const messages = await channel.fetchMessages({limit: 200});
+    const messages = await channel.fetchMessages({limit: 100});
 
     messages.find(m => {
         if (m.author.id === '315926021457051650' && m.embeds[0] && m.embeds[0].description.includes('Server bumped by')) {
