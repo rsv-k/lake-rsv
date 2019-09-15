@@ -1,5 +1,5 @@
 const additional = require('../additional');
-exports.run = (msg, args, playlist, guildMusic) => {
+exports.run = (msg, args, guildMusic) => {
     let description = `
 __**МУЗЫКАЛЬНЫЕ КОМАНДЫ**__
 \`\`\`css

@@ -1,4 +1,5 @@
-exports.run = (msg, args, playlist, guildMusic) => {
+exports.run = (msg, args, guildMusic) => {
+    const playlist = guildMusic.get(msg.guild.id);
     const voice = msg.member.voiceChannel;
     if (!voice) return msg.reply('You are not in any channel');
     else if (!voice.joinable) return msg.reply('No permission to join channel');
@@ -11,4 +12,6 @@ exports.run = (msg, args, playlist, guildMusic) => {
             playlist.dispatcher.dispatcher.resume();
         }, 1000);
     } 
+
+    guildMusic.set(msg.guild.id, playlist);
 }

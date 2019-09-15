@@ -1,4 +1,6 @@
-exports.run = (msg, args, playlist, guildMusic) => {
+exports.run = (msg, args, guildMusic) => {
+    const playlist = guildMusic.get(msg.guild.id);
+
     if(!msg.guild.voiceConnection || !playlist.songs.length) return msg.channel.send('Nothing is being played.');
     if(playlist.songs.length <= 2) return msg.channel.send('The queue is to small to be shuffled');
 

@@ -1,4 +1,6 @@
-exports.run = (msg, args, playlist, guildMusic) => {
+exports.run = (msg, args, guildMusic) => {
+    const playlist = guildMusic.get(msg.guild.id);
+
     let volume = Math.round(args[0]);
     if (volume === playlist.volume) return;
 

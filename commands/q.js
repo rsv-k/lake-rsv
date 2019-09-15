@@ -1,6 +1,7 @@
 const additional = require('../additional');
 
-exports.run = (msg, args, playlist, guildMusic) => {
+exports.run = (msg, args, guildMusic) => {
+    const playlist = guildMusic.get(msg.guild.id);
     if(!msg.guild.voiceConnection || playlist.songs.length === 0) return msg.reply('Nothing is being played.');
 
     const songs = playlist.songs;

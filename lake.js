@@ -33,7 +33,7 @@ const lake = new Discord.Client();
 const { prefix } = require('./config.json');
 const guildMusic = new Map();
 const flag = {
-    reminder: null
+    reminder: null,
 }
 
 lake.on('message', async (msg) => {
@@ -85,14 +85,14 @@ lake.on('message', async (msg) => {
 
 
 
-    const playlist = guildMusic.get(msg.guild.id) || { songs: [], dispatcher: null, volume: 30 }
     
     const [command, ...args] = msg.content.split(' ');
-    
     if (msg.author.bot || !command.startsWith(prefix) || command.indexOf(prefix) !== command.lastIndexOf(prefix)) return;
+    if (!guildMusic.get(msg.guild.id)) guildMusic.set(msg.guild.id, { songs: [], dispatcher: null, volume: 30 });
+
     try {
         const commandFile = require(`./commands/${command.toLowerCase().substring(2)}.js`);
-        commandFile.run(msg, args, playlist, guildMusic);
+        commandFile.run(msg, args, guildMusic);
     }
     catch (err) { console.error(err) }
 });
@@ -210,11 +210,25 @@ lake.on('voiceStateUpdate', (oldMember, newMember) => {
     if (oldUserChannel === undefined && newUserChannel !== undefined && newMember.guild.id === '611111608219074570') {
         if (!newMember.user.bot && newUserChannel.parentID !== '615290496918749187') {
             newMember.addRole('614970662020317339');
-            
+
+            if (newUserChannel.members.some(m => m.id === lake.user.id)) {
+                clearTimeout(flag[newUserChannel.guild.id]);
+            }
         }
     }
     else if (newUserChannel === undefined && newMember.guild.id === '611111608219074570') {
         newMember.removeRole('614970662020317339');
+
+        if (oldUserChannel.members.some(m => m.id === lake.user.id)) {
+            if (oldUserChannel.members.size === 1) {
+                flag[oldUserChannel.guild.id] = setTimeout(() => {
+                    oldUserChannel.guild.voiceConnection.disconnect();
+                    guildMusic.delete(oldUserChannel.guild.id);
+                    
+                }, 5 * 60 * 1000);
+            }
+        }
+        
     }
 });
 
