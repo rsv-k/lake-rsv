@@ -88,7 +88,7 @@ lake.on('message', async (msg) => {
     
     const [command, ...args] = msg.content.split(' ');
     if (msg.author.bot || !command.startsWith(prefix) || command.indexOf(prefix) !== command.lastIndexOf(prefix)) return;
-    if (!guildMusic.get(msg.guild.id)) guildMusic.set(msg.guild.id, { songs: [], dispatcher: null, volume: 30 });
+    if (!guildMusic.get(msg.guild.id)) guildMusic.set(msg.guild.id, { songs: [], dispatcher: null, volume: 5 });
 
     try {
         const commandFile = require(`./commands/${command.toLowerCase().substring(2)}.js`);
@@ -258,6 +258,8 @@ function bump() {
 lake.login(process.env.TOKEN);
 lake.on('ready', async () => {
     console.log('Ready');
+    lake.user.setActivity('--help', {type: 'LISTENING'});
+
     const guild = lake.guilds.get('611111608219074570');
     const channel = guild.channels.get('611302025279438888');
     const messages = await channel.fetchMessages();
