@@ -207,26 +207,23 @@ lake.on('voiceStateUpdate', (oldMember, newMember) => {
     let newUserChannel = newMember.voiceChannel;
     let oldUserChannel = oldMember.voiceChannel;
     
-    if (oldUserChannel === undefined && newUserChannel !== undefined && newMember.guild.id === '611111608219074570') {
+    if (oldUserChannel === undefined && newUserChannel !== undefined) {
         if (!newMember.user.bot && newUserChannel.parentID !== '615290496918749187') {
-            newMember.addRole('614970662020317339');
+            if (newMember.guild.id === '611111608219074570') newMember.addRole('614970662020317339');
 
             if (newUserChannel.members.some(m => m.id === lake.user.id)) {
                 clearTimeout(flag[newUserChannel.guild.id]);
             }
         }
     }
-    else if (newUserChannel === undefined && newMember.guild.id === '611111608219074570') {
-        newMember.removeRole('614970662020317339');
+    else if (newUserChannel === undefined) {
+        if (oldMember.guild.id === '611111608219074570') oldMember.removeRole('614970662020317339');
 
-        if (oldUserChannel.members.some(m => m.id === lake.user.id)) {
-            if (oldUserChannel.members.size === 1) {
-                flag[oldUserChannel.guild.id] = setTimeout(() => {
-                    oldUserChannel.guild.voiceConnection.disconnect();
-                    guildMusic.delete(oldUserChannel.guild.id);
-                    
-                }, 5 * 60 * 1000);
-            }
+        if (oldUserChannel.members.some(m => m.id === lake.user.id) && oldUserChannel.members.size === 1) {
+            flag[oldUserChannel.guild.id] = setTimeout(() => {
+                oldUserChannel.guild.voiceConnection.disconnect();
+                guildMusic.delete(oldUserChannel.guild.id);
+            }, 5 * 60 * 1000);
         }
         
     }

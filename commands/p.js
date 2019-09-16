@@ -46,12 +46,3 @@ function playSong(msg, args, guildMusic) {
         playSong(msg, args, guildMusic);
     });
 }
-
-/* 
-                TO DO
-    1. forbid using --ds on bots
-    2. disconnect after 5 minutes of being alone in voice
-    3. change default volume of sound to 5%
-    4. set activity (--help command)
-    
-*/

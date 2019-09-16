@@ -13,7 +13,7 @@ exports.run = (msg, args) => {
                 counter++;
             });
 
-            msg.channel.send(members);
+            msg.channel.send(members || 'none has this role');
         }
     });
 }
