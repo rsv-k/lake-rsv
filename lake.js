@@ -58,7 +58,7 @@ lake.on('message', async (msg) => {
     
     const [command, ...args] = msg.content.split(' ');
     if (!command.startsWith(prefix) || command.indexOf(prefix) !== command.lastIndexOf(prefix)) return;
-
+    
     try {
         const commandFile = require(`./commands/${command.toLowerCase().substring(2)}`);
         commandFile.run(msg, args, guildMusic);
