@@ -9,9 +9,10 @@ exports.run = (msg, args, guildMusic) => {
 
     if (amount > 1) {
         playlist.songs = playlist.songs.splice(amount - 1);
-        guildMusic.set(msg.guild.id, playlist);
     }
-
+    
     playlist.dispatcher.dispatcher.end();
+    guildMusic.set(msg.guild.id, playlist);
+    
     msg.channel.send(`${amount} ${ amount > 1 ? 'songs have' : 'song has'} been skipped`);
 }
