@@ -5,7 +5,7 @@ exports.run = (msg, args, guildMusic) => {
     if (volume === playlist.volume) return;
 
     if (!playlist.dispatcher) return;
-    if (volume < 0 || volume > 60 || !Number(volume)) return;
+    if (volume < 0 || volume > 100 || !Number(volume)) return msg.reply('I can\'t set that volume');
     playlist.volume = volume;
 
     playlist.dispatcher.dispatcher.setVolume(playlist.volume / 100);

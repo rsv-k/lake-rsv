@@ -1,35 +1,7 @@
-const http = require('http');
-const express = require('express');
-const app = express();
-app.get('/', (req, res) => {
-    console.log(Date.now() + ' Ping Recieved');
-    res.sendStatus(200);
-});
-
-app.listen(process.env.PORT);
-setInterval(() => {
-    http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`)
-}, 280000);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-require('dotenv').config()
+require('dotenv').config();
 const Discord = require('discord.js');
 const lake = new Discord.Client();
+
 const { prefix } = require('./config.json');
 const guildMusic = new Map();
 const flag = {
@@ -37,11 +9,10 @@ const flag = {
 }
 
 lake.on('message', async (msg) => {
-    if (!msg.guild) return;
-    const text = msg.content.toLowerCase();
+    if (!msg.guild || msg.author.bot) return;
     
-    if (text.includes('lago') || text.includes('лаго')) putLagoReactions(msg);
-    else if (msg.channel.type === 'text' && msg.channel.name.toLowerCase().includes('голосование')) {
+    
+    if (msg.channel.type === 'text' && msg.channel.name.toLowerCase().includes('голосование')) {
         const text = msg.content;
         const numbers = text.match(/\d+./g);
         if (!numbers || !text.toLowerCase().includes('темы')) return;
@@ -64,12 +35,11 @@ lake.on('message', async (msg) => {
                     await message.react(`${emojiNumbers[i]}`);
                 }
             });
-            msg.delete();
+        msg.delete();
     }
     else if (msg.channel.id === '611302025279438888' && msg.author.id === '315926021457051650' &&
     msg.embeds[0] && msg.embeds[0].description.includes('Server bumped by')) {
         clearTimeout(flag.reminder);
-        console.log('timer set on 4 hours');
         
         flag.reminder = setTimeout(bump, 4 * 60 * 60 * 1000);
     }
@@ -87,20 +57,15 @@ lake.on('message', async (msg) => {
 
     
     const [command, ...args] = msg.content.split(' ');
-    if (msg.author.bot || !command.startsWith(prefix) || command.indexOf(prefix) !== command.lastIndexOf(prefix)) return;
-    if (!guildMusic.get(msg.guild.id)) guildMusic.set(msg.guild.id, { songs: [], dispatcher: null, volume: 5 });
+    if (!command.startsWith(prefix) || command.indexOf(prefix) !== command.lastIndexOf(prefix)) return;
 
     try {
-        const commandFile = require(`./commands/${command.toLowerCase().substring(2)}.js`);
+        const commandFile = require(`./commands/${command.toLowerCase().substring(2)}`);
         commandFile.run(msg, args, guildMusic);
     }
     catch (err) { console.error(err) }
 });
 
-
-lake.on('disconnect', () => {
-    console.log('disconnecting');
-})
 
 const events = {
 	MESSAGE_REACTION_ADD: 'messageReactionAdd',
@@ -197,8 +162,8 @@ lake.on('raw', async e => {
         if (e.t === 'MESSAGE_REACTION_ADD') {
             lake.emit('messageReactionAdd', reaction, lake.users.get(data.user_id));
         }
-        else if (e.t === 'MESSAGE_REACTION_ADD') {
-            return lake.emit('messageReactionRemove', reaction, lake.users.get(data.user_id));
+        else if (e.t === 'MESSAGE_REACTION_REMOVE') {
+            lake.emit('messageReactionRemove', reaction, lake.users.get(data.user_id));
         }
     });
 })
@@ -229,25 +194,8 @@ lake.on('voiceStateUpdate', (oldMember, newMember) => {
     }
 });
 
-
-function putLagoReactions(msg) {
-    let reaction = random(30) === 7 ? 'lagotired' : 'lago';
-    if (random(100) === 7) reaction = 'lagoscared';
-
-    return addReaction(msg, reaction);
-}
-function addReaction(msg, reaction) {
-    const emoji = lake.guilds.get('565647445758050304').emojis.find(emoji => emoji.name === reaction);
-    msg.react(emoji.id);
-}
-
-function random(max) {
-    return Math.floor(Math.random() * max);
-}
-
 function bump() {
-    const guild = lake.guilds.get('611111608219074570');
-    const channel = guild.channels.get('611302025279438888');
+    const channel = lake.channels.get('611302025279438888');
     
     channel.send('<@&613799917718077450> бампаем (!bump и s.up)');
 }
@@ -257,16 +205,14 @@ lake.on('ready', async () => {
     console.log('Ready');
     lake.user.setActivity('--help', {type: 'LISTENING'});
 
-    const guild = lake.guilds.get('611111608219074570');
-    const channel = guild.channels.get('611302025279438888');
+    const channel = lake.channels.get('611302025279438888');
     const messages = await channel.fetchMessages({limit: 100});
 
     messages.find(m => {
         if (m.author.id === '315926021457051650' && m.embeds[0] && m.embeds[0].description.includes('Server bumped by')) {
             
             const time = 4 *  60 * 60 * 1000 - (new Date() - m.createdAt);
-            clearTimeout(flag.reminder);
-            console.log('bump set in ' + time);
+            
             flag.reminder = setTimeout(bump, time);
             return m;
         }

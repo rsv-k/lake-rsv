@@ -3,7 +3,9 @@ const ytpl = require('ytpl');
 const additional = require('../additional');
 
 exports.run = async (msg, args, guildMusic) => {
-    if (!msg.member.voiceChannel) msg.reply("You are not in any  channel");
+    if (!msg.member.voiceChannel) return msg.reply("You are not in any  channel");
+    if (!guildMusic.get(msg.guild.id)) guildMusic.set(msg.guild.id, { songs: [], dispatcher: null, volume: 5 });
+
     const playlist = guildMusic.get(msg.guild.id);
 
     const link = args[0];
