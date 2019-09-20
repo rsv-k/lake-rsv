@@ -74,8 +74,3 @@ typings/
 
 # FuseBox cache
 .fusebox/
-
-# token for a bot
-token.json
-
-.env
