@@ -11,51 +11,6 @@ const flag = {
 lake.on('message', async (msg) => {
     if (!msg.guild || msg.author.bot) return;
     
-    
-    if (msg.channel.type === 'text' && msg.channel.name.toLowerCase().includes('голосование')) {
-        const text = msg.content;
-        const numbers = text.match(/\d+./g);
-        if (!numbers || !text.toLowerCase().includes('темы')) return;
-
-        const title = text.split('\n')[0];
-        let body = '';
-        text.split('\n').forEach((item, i) => {
-            body += i !== 0 ? item + '\n' : '';
-        })
-        
-        const embed = new Discord.RichEmbed()
-            .setTitle(title)
-            .setColor(0x00000)
-            .setDescription(body);
-            msg.reply({embed}).then(async (message) => {
-                const lastNumber = parseInt(numbers[numbers.length - 1]);
-                const emojiNumbers = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣'];
-
-                for(let i = 0; i < lastNumber; i++) {
-                    await message.react(`${emojiNumbers[i]}`);
-                }
-            });
-        msg.delete();
-    }
-    else if (msg.channel.id === '611302025279438888' && msg.author.id === '315926021457051650' &&
-    msg.embeds[0] && msg.embeds[0].description.includes('Server bumped by')) {
-        clearTimeout(flag.reminder);
-        
-        flag.reminder = setTimeout(bump, 4 * 60 * 60 * 1000);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-    
     const [command, ...args] = msg.content.split(' ');
     if (!command.startsWith(prefix) || command.indexOf(prefix) !== command.lastIndexOf(prefix)) return;
     
@@ -171,18 +126,17 @@ lake.on('raw', async e => {
 lake.on('voiceStateUpdate', (oldMember, newMember) => {
     let newUserChannel = newMember.voiceChannel;
     let oldUserChannel = oldMember.voiceChannel;
+    if (oldMember.guild.id !== '611111608219074570' || !newMember.user.bot || newMember.author.id === '615484787993608202') return;
     
     if (oldUserChannel === undefined && newUserChannel !== undefined) {
-        if (!newMember.user.bot && newUserChannel.parentID !== '615290496918749187') {
-            if (newMember.guild.id === '611111608219074570') newMember.addRole('614970662020317339');
+        newMember.addRole('614970662020317339');
 
-            if (newUserChannel.members.some(m => m.id === lake.user.id)) {
-                clearTimeout(flag[newUserChannel.guild.id]);
-            }
+        if (newUserChannel.members.some(m => m.id === lake.user.id)) {
+            clearTimeout(flag[newUserChannel.guild.id]);
         }
     }
     else if (newUserChannel === undefined) {
-        if (oldMember.guild.id === '611111608219074570') oldMember.removeRole('614970662020317339');
+        oldMember.removeRole('614970662020317339');
 
         if (oldUserChannel.members.some(m => m.id === lake.user.id) && oldUserChannel.members.size === 1) {
             flag[oldUserChannel.guild.id] = setTimeout(() => {
@@ -194,27 +148,8 @@ lake.on('voiceStateUpdate', (oldMember, newMember) => {
     }
 });
 
-function bump() {
-    const channel = lake.channels.get('611302025279438888');
-    
-    channel.send('<@&613799917718077450> бампаем (!bump и s.up)');
-}
-
 lake.login(process.env.TOKEN);
 lake.on('ready', async () => {
     console.log('Ready');
     lake.user.setActivity('--help', {type: 'LISTENING'});
-
-    const channel = lake.channels.get('611302025279438888');
-    const messages = await channel.fetchMessages({limit: 100});
-
-    messages.find(m => {
-        if (m.author.id === '315926021457051650' && m.embeds[0] && m.embeds[0].description.includes('Server bumped by')) {
-            
-            const time = 4 *  60 * 60 * 1000 - (new Date() - m.createdAt);
-            
-            flag.reminder = setTimeout(bump, time);
-            return m;
-        }
-    });
 } );

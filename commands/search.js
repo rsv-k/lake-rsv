@@ -1,12 +1,12 @@
 const search = require('youtube-search');
 const play = require('./p');
+const options = {
+    maxResults: 1,
+    key: process.env.YOUTUBE_API
+}
 
 exports.run = (msg, args, guildMusic) => {
     const songName = args.join(' ');
-    const options = {
-        maxResults: 1,
-        key: process.env.YOUTUBE_API
-    }
 
     search(songName, options, (err, res) => {
         const playlist = guildMusic.get(msg.guild.id);

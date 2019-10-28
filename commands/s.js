@@ -1,6 +1,5 @@
 exports.run = (msg, args, guildMusic) => {
     const playlist = guildMusic.get(msg.guild.id);
-    console.log(playlist.dispatcher.dispatcher);
     const amount = args[0] || 1;
 
     if(!msg.guild.voiceConnection || playlist.songs.length === 0) return msg.reply('Nothing is being played.');
