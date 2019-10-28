@@ -21,7 +21,6 @@ lake.on('message', async (msg) => {
     catch (err) { console.error(err) }
 });
 
-
 const events = {
 	MESSAGE_REACTION_ADD: 'messageReactionAdd',
 	MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
@@ -124,21 +123,23 @@ lake.on('raw', async e => {
 })
 
 lake.on('voiceStateUpdate', (oldMember, newMember) => {
-    let newUserChannel = newMember.voiceChannel;
-    let oldUserChannel = oldMember.voiceChannel;
-    if (oldMember.guild.id !== '611111608219074570' || !newMember.user.bot || newMember.author.id === '615484787993608202') return;
+    const newUserChannel = newMember.voiceChannel;
+    const oldUserChannel = oldMember.voiceChannel;
+    
+    if (oldMember.guild.id !== '611111608219074570' || newMember.user.bot || newMember.roles.get('615484787993608202')) return;
     
     if (oldUserChannel === undefined && newUserChannel !== undefined) {
         newMember.addRole('614970662020317339');
 
-        if (newUserChannel.members.some(m => m.id === lake.user.id)) {
+        if (newUserChannel.members.get(lake.user.id)) {
             clearTimeout(flag[newUserChannel.guild.id]);
         }
     }
     else if (newUserChannel === undefined) {
         oldMember.removeRole('614970662020317339');
 
-        if (oldUserChannel.members.some(m => m.id === lake.user.id) && oldUserChannel.members.size === 1) {
+        if (oldUserChannel.members.get(lake.user.id) && oldUserChannel.members.size === 1) {
+
             flag[oldUserChannel.guild.id] = setTimeout(() => {
                 oldUserChannel.guild.voiceConnection.disconnect();
                 guildMusic.delete(oldUserChannel.guild.id);
