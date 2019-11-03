@@ -15,12 +15,12 @@ exports.run = async (msg, args, guildMusic) => {
     
     // if there is a new track cancel action of leaving due to inactivy for 5 minutes
     clearInterval(playlist.timerOnLeave);
-
-    
-    
-    if (playlist.dispatcher && playlist.songs.length !== 0) return msg.channel.send('added to queue');
     
     playlist.songs = [...playlist.songs, ...(await additional.fillSongs(msg, link))];
+    if (playlist.dispatcher && ![0, 1].includes(playlist.songs.length)) {
+        return msg.channel.send('added to queue');
+    }
+    
     if (playlist.dispatcher && playlist.songs.length === 0) {
         return playSong(msg, args, guildMusic);
     }

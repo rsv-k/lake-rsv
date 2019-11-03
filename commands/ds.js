@@ -1,7 +1,6 @@
 exports.run = (msg, args) => {
-    /* 
-        Filter out all bots
-    */
+    //Filter out all bots
+    
     const members = args.filter(id => {
         const user = getMember(msg, id);
 

@@ -1,3 +1,19 @@
+const http = require('http');
+const express = require('express');
+const app = express();
+app.get('/', (req, res) => {
+    console.log(Date.now() + ' Ping Recieved');
+    res.sendStatus(200);
+});
+
+app.listen(process.env.PORT);
+setInterval(() => {
+    http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`)
+}, 280000);
+
+
+
+
 require('dotenv').config();
 const Discord = require('discord.js');
 const lake = new Discord.Client();
@@ -18,7 +34,7 @@ lake.on('message', async (msg) => {
         const commandFile = require(`./commands/${command.toLowerCase().substring(2)}`);
         commandFile.run(msg, args, guildMusic);
     }
-    catch (err) { console.error(err) }
+    catch (err) { console.error('Uknown command: ' + msg.content) }
 });
 
 
